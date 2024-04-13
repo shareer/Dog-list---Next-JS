@@ -4,10 +4,13 @@ import { useState, useEffect } from "react";
 import { fetchDogs } from "./api";
 import Image from "next/image";
 import Link from "next/link";
+import Header from "./header/page";
 
 export default function DogsPage() {
   const [dogImage, setDogImage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+
+
 
   useEffect(() => {
     generateRandomDog();
@@ -37,44 +40,50 @@ export default function DogsPage() {
       .join(" ");
   };
 
-
   return (
-    <main className="flex min-h-screen flex-col items-center p-24">
-      {loading ? (
-        <div className="flex justify-center items-center mt-4">
-          <div className="flex justify-center items-center mt-4">
-            <svg aria-hidden="true" className="inline w-10 h-10 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
-              <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
-            </svg>
-            <span className="sr-only">Loading...</span>
-          </div>
-        </div>
-      ) : dogImage && (
-        <div>
-          <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-            <Link href={`breed/${extractBreedName(dogImage)}`}>
-              <Image
-                src={dogImage}
-                width={500}
-                height={500}
-                alt={extractBreedName(dogImage) || "Random Dog"}
-                className="rounded md:h-72 w-full object-cover relative"
-                style={{ boxShadow: '0 0 10px rgba(255, 255, 255, 0.5) inset' }}
-              />
-            </Link>
-          </div>
-          <div className="p-5 text-center">
-            <h5 className="mb-2 text-2xl tracking-tight dark:text-white">
-              {formatBreedName(extractBreedName(dogImage) ?? '')}
-            </h5>
-          </div>
-        </div>
-      )}
+    <>
+      <Header />
+      <main className="flex min-h-screen flex-col items-center p-24">
+        <div className="h-[300px] w-[400px]">
+          {loading ? (
+            <div>
+              <div className="flex justify-center items-center mt-[100px]">
+                <svg aria-hidden="true" className="animate-spin h-10 w-10 text-blue-600 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A8.001 8.001 0 014.707 7.22l-1.393 1.392A10.02 10.02 0 002 12c0 5.523 4.477 10 10 10v-4c-1.65 0-3.213-.64-4.387-1.793z"></path>
+                </svg>
+                <span>Loading...</span>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <div className="max-w-sm rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 overflow-hidden">
+                {dogImage && <Link href={`breed/${extractBreedName(dogImage)}`}>
+                  <Image
+                    src={dogImage}
+                    width={500}
+                    height={500}
+                    priority={false}
+                    alt={extractBreedName(dogImage) || "Random Dog"}
+                    className="object-cover h-72 w-full shadow-lg borde rounded-md transition-transform transform hover:scale-105"
+                  />
+                  <div className="p-4">
+                    <h5 className="text-2xl font-semibold text-white flex justify-center items-center  rounded-lg">
+                      {formatBreedName(extractBreedName(dogImage) ?? '')}
+                    </h5>
+                  </div>
+                </Link>}
+              </div>
+              <div className="p-5 text-center">
 
-      {<button onClick={generateRandomDog} className="mt-20 bg-blue-500 hover:bg-blue-400 text-white py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
-        Generate Dog
-      </button>}
-    </main>
+              {dogImage && <button onClick={generateRandomDog} className="mt-6 px-6 py-3 bg-blue-500 text-white font-semibold rounded-md shadow-md hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-100">
+                  Generate
+                </button> }
+              </div>
+            </div>
+          )}
+        </div>
+      </main>
+    </>
   );
 }

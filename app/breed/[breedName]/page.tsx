@@ -1,21 +1,36 @@
 'use client'
-import { fetchDogsByBreed } from '@/app/api';
-import router from 'next/router';
+
 import React, { useEffect, useState, useRef } from 'react';
 import Image from "next/image";
+import { useRouter } from 'next/navigation';
+import { fetchDogsByBreed } from '@/app/api';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Header from '@/app/header/page';
 
-export default function BreedName({ params }: any) {
+export default function BreedName({ params }: any) { //TODO remove any
     const [dogList, setDogList] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+    const [showLoadMore, setShowLoadMore] = useState<boolean>(true);
+    const [showScrollToTop, setShowScrollToTop] = useState<boolean>(false); // State to control visibility of scroll-to-top button
     let bottomRef = useRef<HTMLDivElement>(null);
     const imageCount = 3;
+    const router = useRouter();
 
     useEffect(() => {
         getDogsByBreed();
+
+        // Event listener to check page scroll position
+        window.addEventListener('scroll', handleScroll);
+
+        // Cleanup function to remove event listener
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
     }, []);
 
-    const breedNameForApi = params.breedName.replace('-', '/');
-    const formattedBreedName = params.breedName
+    const breedNameForApi = params?.breedName.replace('-', '/');
+    const formattedBreedName = params?.breedName
         .split("-")
         .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
@@ -24,6 +39,9 @@ export default function BreedName({ params }: any) {
         try {
             setLoading(true);
             const data = await fetchDogsByBreed(breedNameForApi, imageCount);
+            if(data.message.length < 3){
+                setShowLoadMore(false); // hide the 'Show more' button if no more images to load
+            }
             setDogList(data.message);
             scrollToBottom();
         } catch (error) {
@@ -33,39 +51,44 @@ export default function BreedName({ params }: any) {
         }
     }
 
-    // const loadMoreImages = async () => {
-    //     setLoading(true);
-    //     try {
-    //         const data = await fetchDogsByBreed(breedUrl, numImages + 3); // Increment numImages by 3 each time
-    //         setDogList(data.message);
-    //         setNumImages(prev => prev + 3); // Increment numImages by 3 for the next click
-    //         scrollToBottom();
-    //     } catch (error) {
-    //         console.error('Error fetching more dog images:', error);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
     const loadMoreImages = async () => {
         setLoading(true);
         try {
-            const newData = await fetchDogsByBreed(breedNameForApi, 3); // Fetch 3 new items
-            setDogList(prev => [...prev, ...newData.message]); // Append the new items to the existing list
             scrollToBottom();
+            const newData = await fetchDogsByBreed(breedNameForApi, imageCount);
+            if(newData.message.length < 3){
+                setShowLoadMore(false); // hide the 'Show more' button if no more images to load
+            }
+            setDogList(prev => [...prev, ...newData.message]);
+            toast.success('Images fetched successfully!');
         } catch (error) {
             console.error('Error fetching more dog images:', error);
+            toast.error('Error fetching dog images');
         } finally {
             setLoading(false);
         }
     };
 
-
     const scrollToBottom = () => {
         if (bottomRef.current) {
-            console.log("scrollll....");
-            bottomRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' }); // Scroll to the bottom
+            bottomRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
         }
+    };
+
+    const handleScroll = () => {
+        // If the user scrolls down more than 300px, show the scroll-to-top button, otherwise hide it
+        if (window.scrollY > 300) {
+            setShowScrollToTop(true);
+        } else {
+            setShowScrollToTop(false);
+        }
+    };
+
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
     };
 
     const goBack = () => {
@@ -73,19 +96,20 @@ export default function BreedName({ params }: any) {
     }
 
     return (
-        <div className="container mx-auto px-6 pt-10">
+        <><Header/>
+        <div className="container mx-auto px-6 pt-10 relative"> {/* Add 'relative' class to make positioning of scroll-to-top button easier */}
+            <ToastContainer autoClose={1500} /> {/* Add the ToastContainer */}
             <div onClick={goBack}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                 </svg>
             </div>
 
-
-            <h1 className="text-xl font-bold mb-10 text-center">{formattedBreedName}</h1>
+            <h1 className="text-3xl font-light mb-10 text-center">{formattedBreedName}</h1>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
                 {dogList.map((imageUrl, index) => (
-                    // <img key={index} className="max-w-full rounded-lg w-full h-64 object-cover" src={imageUrl} alt={`${formattedBreedName} ${index}`} />
                     <Image
+                        key={index}
                         src={imageUrl}
                         width={500}
                         height={500}
@@ -95,6 +119,7 @@ export default function BreedName({ params }: any) {
                 ))}
             </div>
             <div />
+
             {loading && (
                 <div>
                     <div className="flex justify-center items-center mt-4">
@@ -107,15 +132,32 @@ export default function BreedName({ params }: any) {
                 </div>
             )}
 
-            {!loading && (
-                <div className="flex justify-center">
-                    <button onClick={loadMoreImages} className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow">
-                        Load More
+            {(!loading && showLoadMore) && (
+                <div className="mt-10 flex justify-center">
+                    <button onClick={loadMoreImages} className="mt-4 font-light bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded shadow">
+                        Show More
                     </button>
                 </div>
             )}
-            <div style={{ float: "left", clear: "both" }} ref={bottomRef}>
-            </div>
+
+            {(!loading && !showLoadMore) && (
+                <div className="mt-10 flex justify-center">
+                   <span> No More Images to Show</span>
+                </div>
+            )}
+
+            {/* Render the scroll-to-top button conditionally based on the state */}
+            {showScrollToTop && (
+                <button className="rounded-full bg-blue-600 p-3 text-xs font-medium uppercase fixed right-0 top-1/4 transform -translate-y-1/2" onClick={scrollToTop} style={{ right:0, top:"50%"}}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                    </svg>
+                </button>
+                
+            )}
+
+            <div style={{ float: "left", clear: "both", height:"300px"}} ref={bottomRef}></div>
         </div>
+        </>
     );
 }
