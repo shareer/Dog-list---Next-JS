@@ -1,7 +1,7 @@
 export default function BreedsPage(){
     return (
         <div>
-            <h1>Breeed Page</h1>
+            <h1>Breed Page</h1>
         </div>
     )
 }

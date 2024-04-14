@@ -140,7 +140,7 @@ export default function BreedName({ params }: any) {
                     </div>
 
                     <div className="flex items-center justify-center flex-grow">
-                        <h1 className="text-3xl font-light">{formattedBreedName}</h1>
+                        <h1 className="text-2xl sm:text-3xl font-light">{formattedBreedName}</h1>
                     </div>
 
                     <div className="ml-auto" onClick={() => router.push('/')}>
