@@ -83,8 +83,8 @@ export default function DogImage() {
     };
 
     return (
-        <main className="flex min-h-screen flex-col items-center p-24">
-            <div className="h-[300px] w-[400px]">
+        <main className="flex flex-col items-center p-24">
+            <div className="h-[300px] w-[360px]">
                 {loading ? (
                     <Loader />
                 ) : (
