@@ -2,12 +2,15 @@
 
 import DogImage from "@/components/DogImage";
 import Header from "@/components/Header";
+import { Suspense } from "react";
 
 export default function DogsPage() {
   return (
     <>
-      <Header />
-      <DogImage />
+      <Suspense>
+        <Header />
+        <DogImage />
+      </Suspense>
     </>
   );
 }
