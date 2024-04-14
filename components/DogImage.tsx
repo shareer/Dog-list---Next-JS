@@ -1,13 +1,14 @@
 'use client'
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
-import { fetchDogs } from '../api';
-import Loader from '../loader/page';
 import Image from "next/image";
 import Link from "next/link";
+import Loader from "@/components/Loader";
+import { fetchDogs } from "@/app/api";
+import { URLS } from "@/utils/constant";
 
 export default function DogImage() {
-
+    // STATES AND CONSTANTS
     const [dogImage, setDogImage] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const searchParams = useSearchParams();
@@ -15,15 +16,20 @@ export default function DogImage() {
     const search = searchParams.get('breed');
     const name = searchParams.get('name');
 
-
+    // USE EFFECT HOOK   
     useEffect(() => {
         if (!search) {
             generateRandomDog();
         } else {
-            setDogImage(`https://images.dog.ceo/breeds/${search}/${name}`);
+            setDogImage(`${URLS.IMAGE_BASE_URL}/breeds/${search}/${name}`);
         }
     }, [])
 
+    //### API METHODS ###//
+
+    /**
+     * Fetches a random dog image and navigates to the home page.
+     */
     const generateRandomDog = async () => {
         setLoading(true);
         try {
@@ -37,12 +43,25 @@ export default function DogImage() {
         }
     };
 
+    //### HELPER METHODS ###//
 
+    /**
+     * Extracts the breed name from a URL string containing the pattern 'breeds/<breed-name>'.
+     * 
+     * @param {string} url The URL string to extract the breed name from.
+     * @returns {string | null} The extracted breed name, or null if not found.
+     */
     const extractBreedName = (url: string): string | null => {
         const match = url.match(/breeds\/([^/]+)/);
         return match ? match[1] : null;
     };
 
+    /**
+     * Extracts the image name from a URL string.
+     * 
+     * @param {string} url The URL string to extract the image name from.
+     * @returns {string | null} The extracted image name, or null if not found.
+     */
     const extractImageName = (url: string): string | null => {
         // Split the URL by '/'
         const parts = url.split('/');
@@ -50,13 +69,18 @@ export default function DogImage() {
         return parts[parts.length - 1] || null;
     }
 
+    /**
+     * Formats a breed name by capitalizing the first letter of each word and replacing hyphens with spaces.
+     * 
+     * @param {string} breedName The breed name to format.
+     * @returns {string} The formatted breed name.
+     */
     const formatBreedName = (breedName: string) => {
         return breedName
             .split("-")
             .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
             .join(" ");
     };
-
 
     return (
         <main className="flex min-h-screen flex-col items-center p-24">

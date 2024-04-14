@@ -1,8 +1,7 @@
 'use client'
 
-import Header from "./header/page";
-import DogImage from "./dog-image/page";
-
+import DogImage from "@/components/DogImage";
+import Header from "@/components/Header";
 
 export default function DogsPage() {
   return (

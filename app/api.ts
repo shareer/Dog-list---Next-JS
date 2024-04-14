@@ -1,6 +1,9 @@
+import { URLS } from "@/utils/constant";
+
 export async function fetchDogs() {
+    
     try {
-        const response = await fetch('https://dog.ceo/api/breeds/image/random');
+        const response = await fetch(`${URLS.API_BASE_URL}/breeds/image/random`);
         if (!response.ok) {
             throw new Error('Failed to fetch dog images');
         }
@@ -16,7 +19,7 @@ export async function fetchDogs() {
 
 export async function fetchDogsByBreed(breed: string, count:number) {
     try {
-        const response = await fetch(`https://dog.ceo/api/breed/${breed}/images/random/${count}`);
+        const response = await fetch(`${URLS.API_BASE_URL}/breed/${breed}/images/random/${count}`);
         if (!response.ok) {
             throw new Error('Failed to fetch dog images');
         }

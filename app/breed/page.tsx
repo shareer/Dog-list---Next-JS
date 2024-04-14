@@ -1,5 +1,3 @@
-import BreedName from "./[breedName]/page";
-
 export default function BreedsPage(){
     return (
         <div>
