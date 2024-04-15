@@ -3,7 +3,7 @@ An application that generates random dog images and dynamically fetches more ima
 
 ## Demo 
 
-[https://random-dogs-generator.vercel.app/] (https://random-dogs-generator.vercel.app/)
+[`https://random-dogs-generator.vercel.app/`] (https://random-dogs-generator.vercel.app/)
 
 ## Features
 - Generates random dog images on the homepage.
