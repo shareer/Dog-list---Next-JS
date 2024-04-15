@@ -3,13 +3,13 @@ An application that generates random dog images and dynamically fetches more ima
 
 ## Demo 
 
-[`https://random-dogs-generator.vercel.app/`] (https://random-dogs-generator.vercel.app/)
+https://random-dogs-generator.vercel.app/
 
 ## Features
 - Generates random dog images on the homepage.
 - Allows users to select a specific breed and fetch more images related to that breed.
-- Built with Next.js and Tailwind CSS.
-- Uses the Dog CEO's Dog API for fetching random dog images and images by breed.
+- Built with Next.js, Typescript and Tailwind CSS.
+- Uses the Dog CEO's Dog API for fetching random dog images and images by breed : https://dog.ceo/dog-api/.
 
 ## Getting Started
 First, run the development server:
