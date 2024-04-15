@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Loader from "@/components/Loader";
 import { fetchDogs } from "@/app/api";
-import { URLS } from "@/utils/constant";
+import { URLS, placeholderImage } from "@/utils/constant";
 
 export default function DogImage() {
     // STATES AND CONSTANTS
@@ -97,6 +97,8 @@ export default function DogImage() {
                                     height={500}
                                     priority={false}
                                     alt={extractBreedName(dogImage) || "Random Dog"}
+                                    placeholder='blur'
+                                    blurDataURL={placeholderImage}
                                     className="object-cover h-72 w-full shadow-lg borde rounded-md transition-transform transform hover:scale-105"
                                 />
                                 <div className="p-4">

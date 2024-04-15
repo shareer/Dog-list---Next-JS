@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from '@/components/Header';
 import Loader from '@/components/Loader';
+import { placeholderImage } from '@/utils/constant';
 
 
 export default function BreedName({ params }: any) {
@@ -160,7 +161,10 @@ export default function BreedName({ params }: any) {
                             src={imageUrl}
                             width={500}
                             height={500}
+                            priority={true}
+                            placeholder='blur'
                             alt={`${formattedBreedName} ${index}`}
+                            blurDataURL={placeholderImage}
                             className="rounded-lg w-full h-64 object-cover max-w-md transition duration-300 ease-in-out hover:scale-110"
                         />
                     ))}
