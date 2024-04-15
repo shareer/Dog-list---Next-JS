@@ -11,6 +11,8 @@ https://random-dogs-generator.vercel.app/
 - Built with Next.js, Typescript and Tailwind CSS.
 - Uses the Dog CEO's Dog API for fetching random dog images and images by breed : https://dog.ceo/dog-api/.
 
+
+
 ## Getting Started
 First, run the development server:
 
@@ -20,7 +22,7 @@ npm run dev
 yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
+```
 
 ## Node js and NPM versions used
 - Node js: v20.11.0
